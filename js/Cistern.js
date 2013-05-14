@@ -25,12 +25,9 @@ Cistern.prototype.loadCistern = function() {
                          min, max, this.rock.max.z);
 }
 
-Cistern.prototype.drawCistern = function(drawWater, waterHeight) {
-   gl.shader.setUniforms({'useWater':false});
+Cistern.prototype.drawCistern = function(waterHeight) {
    this.rock.Draw(0.0);
 
-   if (waterHeight < 0.2)
-      gl.shader.setUniforms({'useWater':true});
-   if (drawWater)
+   if (waterHeight > 0.0)
       this.water.Draw(waterHeight);
 }

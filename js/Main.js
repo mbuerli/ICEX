@@ -1,7 +1,8 @@
 var gl;
-var defaultWater = 0.0;
-var alteredWater = 0.0;
+var waterLevel = 0.5;
 var cistern;
+
+var consumption = 0.0;
 
 var xRot = 0;
 var xSpeed = 0;
@@ -26,8 +27,9 @@ window.onload = function() {
 
   gl.draw = function() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
+    gl.enable(gl.CULL_FACE);
     var uniforms = {
+      'waterLevel' : [waterLevel-0.05,0,0],
       'useLighting' : true,
       'useTextures' : true,
       'ambientColor' : [0.2, 0.2, 0.2],
@@ -36,23 +38,32 @@ window.onload = function() {
     };
     gl.shader.setUniforms(uniforms);
 
+    gl.matrixMode(gl.PROJECTION);
+    gl.pushMatrix();
+      gl.translate([0,-2,-15]);
+      gl.rotate(yRot, [0, 1, 0]);
+      //gl.rotate(xRot, [1, 0, 0]);
+
+    gl.matrixMode(gl.MODELVIEW);
     gl.loadIdentity();
 
     gl.pushMatrix();
-      gl.translate([-(cistern.rock.max.x + cistern.rock.min.x)/2 - 6.0,
-                       -(cistern.rock.max.y + cistern.rock.min.y)/2, zVal]);
-      gl.rotate(xRot, [1, 0, 0]);
-      gl.rotate(yRot, [0, 1, 0]);
-      cistern.drawCistern(true, defaultWater);
+      gl.translate([-(cistern.rock.max.x + cistern.rock.min.x)/2,
+                       -(cistern.rock.max.y + cistern.rock.min.y)/2, -cistern.rock.min.z]);
+      gl.rotate(-90, [1, 0, 0]);
+      cistern.drawCistern(waterLevel);
     gl.popMatrix();
 
-    gl.pushMatrix();
-      gl.translate([-(cistern.rock.max.x + cistern.rock.min.x)/2 + 1.0,
-                    -(cistern.rock.max.y + cistern.rock.min.y)/2, zVal]);
-      gl.rotate(xRot, [1, 0, 0]);
-      gl.rotate(yRot, [0, 1, 0]);
-      cistern.drawCistern(true, alteredWater);
+    gl.matrixMode(gl.PROJECTION);
     gl.popMatrix();
+
+    gl.matrixMode(gl.MODELVIEW);
+  }
+
+  gl.update = function() {
+    yRot += 0.04;
+    waterLevel -= consumption;
+    if (waterLevel < -0.1) gl.pause();
   }
 
   document.onkeydown = handleKeyDown;
@@ -60,6 +71,7 @@ window.onload = function() {
 
   document.getElementById('loading').innerHTML = '';
   gl.resize();
+  gl.animate();
 }
 
 function handleKeyDown(event) {
@@ -106,38 +118,10 @@ function handleKeys() {
    }
 }
 
-
-
-// function tick() {
-//    requestAnimFrame(tick);
-//    handleKeys();
-//    drawScene();
-// }
-
-// function webGLStart() {
-//    var canvas = document.getElementById("canvas");
-//    initGL(canvas);
-//    initShaders();
-//    loadCistern();
-//    //updateWaterLevels();
-//    gl.clearColor(1.0, 1.0, 1.0, 1.0);
-//    gl.enable(gl.DEPTH_TEST);
-
-//    document.onkeydown = handleKeyDown;
-//    document.onkeyup = handleKeyUp;
-
-//    tick();
-// }
-
-// function loadCistern() {
-//    cistern = new Cistern("House Dar Ta'anna", "Vertices/HouseDarTa'anna");
-//    cistern.loadCistern();
-// }
-
-// function updateWaterLevels() {
-//     calcDefaultWaterLevel();
-//     calcAlteredWaterLevel();
-// }
+function updateWaterLevels() {
+    // calcDefaultWaterLevel();
+    // calcAlteredWaterLevel();
+}
 
 // function calcDefaultWaterLevel() {
 //     //get user inputs
@@ -233,13 +217,11 @@ function handleKeys() {
 //         alteredWater = cistern.rock.max.z;
 // }
 
-// function reset() {
-//     //resets num_months to zero, thus restarting the depletion of cistern water
-//     num_months = 0;
-//     document.getElementById("num_months").selectedIndex = 0;
-
-//     updateWaterLevels();
-// }
-
-
-//http://www.motherearthnews.com/uploadedImages/articles/issues/1978-05-01/051-116-01-Inset-PhotoA_01.jpg
+function reset() {
+  consumption = 0.01;
+  waterLevel = 1;
+  gl.animate();
+  num_months = 0;
+  document.getElementById("num_months").selectedIndex = 0;
+  updateWaterLevels();
+}

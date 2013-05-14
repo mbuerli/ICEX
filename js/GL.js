@@ -95,12 +95,16 @@ function addDrawFunctions(gl) {
     gl.shader = new Shader(gl, vertexFile, fragFile);
   }
   gl.animate = function() {
-    if (!gl.paused) requestAnimFrame(gl.animate);
+    gl.paused = false;
+    gl.animation();
+  }
+  gl.animation = function() {
+    if (!gl.paused) requestAnimFrame(gl.animation);
     gl.update();
     gl.draw();
   }
-  gl.pause = function(state) {
-    gl.paused = state;
+  gl.pause = function() {
+    gl.paused = true;
   }
   window.onresize = gl.resize;
 }

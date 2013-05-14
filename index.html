@@ -14,7 +14,7 @@
   <script src="js/main.js"></script>
   <style type="text/css">
     * { -webkit-user-select: none; -moz-user-select: none; cursor: default; }
-    body { font: 13px/18px Arial, sans-serif; background: black; color: white; overflow: hidden; }
+    body { font: 13px/18px Arial, sans-serif; background: #98c4c9; color: white; overflow: hidden; }
     a { color: inherit; cursor: pointer; }
     img { display: none; }
     ul { padding: 0 0 0 20px; }
@@ -22,12 +22,109 @@
     h2 { font: bold italic 17px/17px Georgia; padding-top: 10px; }
     small { display: block; font-size: 11px; line-height: 15px; }
     canvas { position: absolute; top: 0; left: 0; }
-    #help { position: absolute; top: 0; right: 0; bottom: 0; width: 280px; padding-right: 20px; overflow: auto; }
+    #controls { position: absolute; top: 0; right: 0; bottom: 0; width: 280px; padding-right: 20px; overflow: auto; }
     #loading { position: absolute; left: 0; top: 50%; right: 300px; text-align: center; margin-top: -8px; }
   </style>
 </head><body>
   <div id="loading">Loading...</div>
-  <div id="help">
-    <h1>Sidbar</h1>
+  <div id="controls">
+    <h1>Conserve Your Water!</h1>
+      <div id="questions">
+        How many people live in your household?
+        <select id="num_people" onchange="updateWaterLevels()">
+           <option value="1" SELECTED>1</option>
+           <option value="2">2</option>
+           <option value="3">3</option>
+           <option value="4">4</option>
+           <option value="5">5</option>
+           <option value="6">6</option>
+           <option value="7">7</option>
+           <option value="8">8</option>
+           <option value="9">9+</option>
+        </select><br/>
+
+        Do you have a dishwasher?
+        <select id="have_dishwasher" onchange="updateWaterLevels()">
+           <option value="1" SELECTED>Yes</option>
+           <option value="2">No</option>
+        </select><br/>
+
+        Do you have a washing machine?
+        <select id="have_washing_machine" onchange="updateWaterLevels()">
+           <option value="1" SELECTED>Yes</option>
+           <option value="0">No</option>
+        </select>
+     </div>
+
+     <br/><div id="display_options">
+        Visualize cistern after:
+        <select id="num_months" onchange="updateWaterLevels()">
+           <option value="0" SELECTED>0 months</option>
+           <option value="1">1 month</option>
+           <option value="2">2 months</option>
+           <option value="3">3 months</option>
+           <option value="4">4 months</option>
+           <option value="5">5 months</option>
+           <option value="6">6 months</option>
+           <option value="7">7 months</option>
+           <option value="8">8 months</option>
+           <option value="9">9 months</option>
+           <option value="10">10 months</option>
+           <option value="11">11 months</option>
+           <option value="12">1 year</option>
+           <option value="13">1 year, 1 month</option>
+           <option value="14">1 year, 2 months</option>
+           <option value="15">1 year, 3 months</option>
+           <option value="16">1 year, 4 months</option>
+           <option value="17">1 year, 5 months</option>
+           <option value="18">1 year, 6 months</option>
+        </select>
+
+        <button onclick="reset()">RESET</button>
+     </div>
+
+     </br><div id="usage_metrics">
+         <b>Alter your water usage to make your cistern last longer! </b><br/>
+         The dishwasher runs once every
+         <select id="days_between_dishwashes" onchange="updateWaterLevels()">
+             <option value="0.5"> >1x/day </option>
+             <option value="1">1 day</option>
+             <option value="2">2 days</option>
+             <option value="3" SELECTED>3 days</option>
+             <option value="4">4 days</option>
+             <option value="5">5 days</option>
+             <option value="6">6 days</option>
+             <option value="7">7 days</option>
+         </select><br/>
+         A load of laundry is done every
+         <select id="days_between_washes" onchange="updateWaterLevels()">
+             <option value="1">1 day</option>
+             <option value="3">3 days</option>
+             <option value="5">5 days</option>
+             <option value="7" SELECTED>7 days</option>
+             <option value="9">9 days</option>
+             <option value="11">11 days</option>
+             <option value="13">13 days</option>
+             <option value="15">15 days</option>
+             <option value="17">17 days</option>
+             <option value="19">19 days</option>
+         </select><br/>
+         Length of average shower:
+         <select id="shower_length" onchange="updateWaterLevels()">
+             <option value="3">3 minutes</option>
+             <option value="4">4 minutes</option>
+             <option value="5">5 minutes</option>
+             <option value="6">6 minutes</option>
+             <option value="7">7 minutes</option>
+             <option value="8">8 minutes</option>
+             <option value="9">9 minutes</option>
+             <option value="10" SELECTED>10 minutes</option>
+             <option value="11">11 minutes</option>
+             <option value="12">12 minutes</option>
+             <option value="13">13 minutes</option>
+             <option value="14">14 minutes</option>
+             <option value="15">15 minutes</option>
+         </select>
+     </div>
   </div>
 </body></html>

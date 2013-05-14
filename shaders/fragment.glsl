@@ -3,13 +3,14 @@ precision mediump float;
 varying vec2 vTextureCoord;
 varying vec3 vTransformedNormal;
 varying vec4 vPosition;
-varying float colorBlue;
+varying float vHeight;
 
 uniform bool useLighting;
 uniform bool useTextures;
 uniform vec3 ambientColor;
 uniform vec3 pointLightingLocation;
 uniform vec3 pointLightingColor;
+uniform vec3 waterLevel;
 uniform sampler2D sampler;
 
 void main(void) {
@@ -20,7 +21,6 @@ void main(void) {
       lightWeighting = vec3(1.0, 1.0, 1.0);
    } else {
       vec3 lightDirection = normalize(pointLightingLocation - vPosition.xyz);
-
       float directionalLightWeighting = abs(dot(normalize(vTransformedNormal), lightDirection));
       lightWeighting = ambientColor + pointLightingColor * directionalLightWeighting;
    }
@@ -32,8 +32,9 @@ void main(void) {
       fragmentColor = vec4(1.0, 1.0, 1.0, 1.0);
    }
 
-	if(colorBlue < 0.0)
-		gl_FragColor = vec4(fragmentColor.rgb * lightWeighting * blue.rgb, fragmentColor.a);
-	else
-		gl_FragColor = vec4(fragmentColor.rgb * lightWeighting, fragmentColor.a);
+   if (vHeight < waterLevel.x) {
+      fragmentColor *= blue;  
+   }
+
+	gl_FragColor = vec4(fragmentColor.rgb * lightWeighting, fragmentColor.a);
 }
