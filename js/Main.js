@@ -3,6 +3,7 @@ var waterLevel = 0.5;
 var cistern;
 
 var consumption = 0.0;
+var num_months;
 
 var xRot = 0;
 var xSpeed = 0;
@@ -63,7 +64,9 @@ window.onload = function() {
   gl.update = function() {
     yRot += 0.04;
     waterLevel -= consumption;
+    num_months -= 0.01;
     if (waterLevel < -0.1) gl.pause();
+    if (num_months < 0) gl.pause();
   }
 
   document.onkeydown = handleKeyDown;
@@ -118,110 +121,34 @@ function handleKeys() {
    }
 }
 
-function updateWaterLevels() {
-    // calcDefaultWaterLevel();
-    // calcAlteredWaterLevel();
+function updateWaterLevels() {}
+
+function updateWaterConsumption() {
+  var num_people = parseFloat(document.getElementById("num_people").value);
+  var have_dishwasher = parseFloat(document.getElementById("have_dishwasher").value);
+  var have_washing_machine = parseFloat(document.getElementById("have_washing_machine").value);
+  var flush = 6;
+  var flushes_per_day = 3;
+  var shower_per_min = 4;
+  var shower_length = parseFloat(document.getElementById("shower_length").value);
+  var showers_per_day = 0.5;
+  var dishwasher = 37.5;
+  var dishwashes_per_day = 1 / parseFloat(document.getElementById("days_between_dishwashes").value);
+  var washing_machine = 112.5;
+  var washes_per_day = 1 / parseFloat(document.getElementById("days_between_washes").value);
+  var base_area = 9.7;
+
+  var day_per_person = flush * flushes_per_day
+      + shower_per_min * shower_length * showers_per_day;
+  var day = have_dishwasher * dishwasher * dishwashes_per_day
+      + have_washing_machine * washing_machine * washes_per_day;
+  var month = (day_per_person * num_people + day) * 365 / 12;
+  consumption = month / (base_area * 2000) * 0.01;
 }
 
-// function calcDefaultWaterLevel() {
-//     //get user inputs
-//     var num_people = parseFloat(document.getElementById("num_people").value);
-//     var have_dishwasher = parseFloat(document.getElementById("have_dishwasher").value);
-//     var have_washing_machine = parseFloat(document.getElementById("have_washing_machine").value);
-//     var num_months = parseFloat(document.getElementById("num_months").value);
-
-//     //set cistern metrics
-//     var base_area = 9.7;
-
-//     //set usage metrics
-//     var flush = 6;
-//     var flushes_per_day = 3;
-//     var shower_per_min = 4;
-//     var shower_length = 10;
-//     var showers_per_day = 0.5;
-//     var dishwasher = 37.5;
-//     var dishwashes_per_day = 1.0/3.0;
-//     var washing_machine = 112.5;
-//     var washes_per_day = 1.0/7.0;
-
-//     //daily usage calculations
-//     var day_per_person = flush * flushes_per_day
-//         + shower_per_min * shower_length * showers_per_day;
-//     var day = have_dishwasher * dishwasher * dishwashes_per_day
-//         + have_washing_machine * washing_machine * washes_per_day;
-//     var month = (day_per_person * num_people + day) * 365 / 12;
-
-//     //average monthly rainfall for Maltese Islands
-//     var rainfall = [89, 68, 53, 34, 23, 0, 0, 0, 36, 79, 91, 95];
-
-//     var cistern_level_liters = base_area * cistern.rock.max.z * 1000;
-
-//     //march thru months, adding rainfall, and subtracting usage
-//     for (var i = 0; i < num_months; i++) {
-//         cistern_level_liters += rainfall[i%12] - month;
-//     }
-
-//     //convert cistern level from liters to meters
-//     defaultWater = cistern_level_liters / (base_area * 1000);
-//     //ensure that the level is not negative
-//     if (defaultWater < 0)
-//         defaultWater = 0;
-//     else if (defaultWater > cistern.rock.max.z)
-//         defaultWater = cistern.rock.max.z;
-// }
-
-// function calcAlteredWaterLevel() {
-//     //get user inputs
-//     var num_people = parseFloat(document.getElementById("num_people").value);
-//     var have_dishwasher = parseFloat(document.getElementById("have_dishwasher").value);
-//     var have_washing_machine = parseFloat(document.getElementById("have_washing_machine").value);
-//     var num_months = parseFloat(document.getElementById("num_months").value);
-
-//     //set cistern metrics
-//     var base_area = 9.7;
-
-//     //set usage metrics
-//     var flush = 6;
-//     var flushes_per_day = 3;
-//     var shower_per_min = 4;
-//     var shower_length = parseFloat(document.getElementById("shower_length").value);
-//     var showers_per_day = 0.5;
-//     var dishwasher = 37.5;
-//     var dishwashes_per_day = 1 / parseFloat(document.getElementById("days_between_dishwashes").value);
-//     var washing_machine = 112.5;
-//     var washes_per_day = 1 / parseFloat(document.getElementById("days_between_washes").value);
-
-//     //daily usage calculations
-//     var day_per_person = flush * flushes_per_day
-//         + shower_per_min * shower_length * showers_per_day;
-//     var day = have_dishwasher * dishwasher * dishwashes_per_day
-//         + have_washing_machine * washing_machine * washes_per_day;
-//     var month = (day_per_person*num_people + day) * 365 / 12;
-
-//     //average monthly rainfall for Maltese Islands
-//     var rainfall = [89, 68, 53, 34, 23, 0, 0, 0, 36, 79, 91, 95];
-
-//     var cistern_level_liters = base_area * cistern.rock.max.z * 1000;
-
-//     //march thru months, adding rainfall, and subtracting usage
-//     for (var i = 0; i < num_months; i++) {
-//         cistern_level_liters += rainfall[i%12] - month;
-//     }
-
-//     //convert cistern level from liters to meters
-//     alteredWater = cistern_level_liters / (base_area * 1000);
-//     //ensure that the level is not negative
-//     if (alteredWater < 0)
-//         alteredWater = 0;
-//     else if (alteredWater > cistern.rock.max.z)
-//         alteredWater = cistern.rock.max.z;
-// }
-
-function reset() {
-  consumption = 0.01;
+function go() {
+  num_months = parseFloat(document.getElementById("num_months").value);
+  updateWaterConsumption();
   waterLevel = 1;
   gl.animate();
-  num_months = 0;
-  document.getElementById("num_months").selectedIndex = 0;
-  updateWaterLevels();
 }

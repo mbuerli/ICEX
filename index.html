@@ -22,7 +22,7 @@
     h2 { font: bold italic 17px/17px Georgia; padding-top: 10px; }
     small { display: block; font-size: 11px; line-height: 15px; }
     canvas { position: absolute; top: 0; left: 0; }
-    #controls { position: absolute; top: 0; right: 0; bottom: 0; width: 280px; padding-right: 20px; overflow: auto; }
+    #controls { position: absolute; top: 0; right: 0; bottom: 0; width: 280px; overflow: auto; }
     #loading { position: absolute; left: 0; top: 50%; right: 300px; text-align: center; margin-top: -8px; }
   </style>
 </head><body>
@@ -56,35 +56,7 @@
         </select>
      </div>
 
-     <br/><div id="display_options">
-        Visualize cistern after:
-        <select id="num_months" onchange="updateWaterLevels()">
-           <option value="0" SELECTED>0 months</option>
-           <option value="1">1 month</option>
-           <option value="2">2 months</option>
-           <option value="3">3 months</option>
-           <option value="4">4 months</option>
-           <option value="5">5 months</option>
-           <option value="6">6 months</option>
-           <option value="7">7 months</option>
-           <option value="8">8 months</option>
-           <option value="9">9 months</option>
-           <option value="10">10 months</option>
-           <option value="11">11 months</option>
-           <option value="12">1 year</option>
-           <option value="13">1 year, 1 month</option>
-           <option value="14">1 year, 2 months</option>
-           <option value="15">1 year, 3 months</option>
-           <option value="16">1 year, 4 months</option>
-           <option value="17">1 year, 5 months</option>
-           <option value="18">1 year, 6 months</option>
-        </select>
-
-        <button onclick="reset()">RESET</button>
-     </div>
-
      </br><div id="usage_metrics">
-         <b>Alter your water usage to make your cistern last longer! </b><br/>
          The dishwasher runs once every
          <select id="days_between_dishwashes" onchange="updateWaterLevels()">
              <option value="0.5"> >1x/day </option>
@@ -125,6 +97,23 @@
              <option value="14">14 minutes</option>
              <option value="15">15 minutes</option>
          </select>
+     </div>
+
+     <br/><div id="display_options">
+        Visualize cistern after:
+        <select id="num_months" onchange="updateWaterLevels()">
+           <option value="0" SELECTED>0 months</option>
+           <option value="1">1 month</option>
+           <option value="2">2 months</option>
+           <option value="3">3 months</option>
+           <option value="6">6 months</option>
+           <option value="12">1 year</option>
+           <option value="18">1 year, 6 months</option>
+           <option value="24">2 years</option>
+           <option value="36">3 years</option>
+        </select>
+
+        <button onclick="go()">GO!</button>
      </div>
   </div>
 </body></html>
