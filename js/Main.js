@@ -3,7 +3,7 @@ var waterLevel = 0.5;
 var cistern;
 
 var consumption = 0.0;
-var num_months;
+var num_months, total_months;
 
 var xRot = 0;
 var xSpeed = 0;
@@ -21,7 +21,7 @@ window.onload = function() {
   gl = new GL();
   gl.loadShader("shaders/vertex.glsl", "shaders/fragment.glsl");
   gl.enable(gl.DEPTH_TEST);
-  gl.clearColor(1,1,1,1);
+  gl.clearColor(0,0,0,0);
   //gl.disableVertexAttribArray(3);
   cistern = new Cistern("House Dar Ta'anna", "vertices/HouseDarTa'anna");
   cistern.loadCistern();
@@ -41,7 +41,7 @@ window.onload = function() {
 
     gl.matrixMode(gl.PROJECTION);
     gl.pushMatrix();
-      gl.translate([0,-2,-15]);
+      gl.translate([0,-1.5,-10]);
       gl.rotate(yRot, [0, 1, 0]);
       //gl.rotate(xRot, [1, 0, 0]);
 
@@ -65,6 +65,9 @@ window.onload = function() {
     yRot += 0.04;
     waterLevel -= consumption;
     num_months -= 0.01;
+    if (total_months) {
+      document.getElementById("month").innerHTML = "Month " + Math.floor(total_months - num_months);
+    }
     if (waterLevel < -0.1) gl.pause();
     if (num_months < 0) gl.pause();
   }
@@ -148,6 +151,7 @@ function updateWaterConsumption() {
 
 function go() {
   num_months = parseFloat(document.getElementById("num_months").value);
+  total_months = num_months;
   updateWaterConsumption();
   waterLevel = 1;
   gl.animate();
