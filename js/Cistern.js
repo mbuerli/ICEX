@@ -23,6 +23,8 @@ Cistern.prototype.loadCistern = function() {
    requestWater.send();
    this.water = new Mesh(requestWater.responseText, "textures/WaterTex.gif",
                          min, max, this.rock.max.z);
+   //min.print();
+   //max.print();
 }
 
 Cistern.prototype.drawCistern = function(waterHeight) {

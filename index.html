@@ -6,39 +6,64 @@
   <script src="js/glMatrix-0.9.5.min.js"></script>
   <script src="js/shader.js"></script>
   <script src="js/gl.js"></script>
-  <script src="js/Vertex.js"></script>
-  <script src="js/Mesh.js"></script>
-  <script src="js/Texture.js"></script>
-  <script src="js/Buffers.js"></script>
-  <script src="js/Cistern.js"></script>
+  <script src="js/vertex.js"></script>
+  <script src="js/mesh.js"></script>
+  <script src="js/texture.js"></script>
+  <script src="js/buffers.js"></script>
+  <script src="js/cistern.js"></script>
   <script src="js/main.js"></script>
   <style type="text/css">
     * { -webkit-user-select: none; -moz-user-select: none; cursor: default; }
-    body { font: 13px/18px Arial, sans-serif;  color: black; overflow: hidden; }
+    body { font: 13px/18px Arial, sans-serif; background-color: black; color: white; overflow: hidden; }
     a { color: inherit; cursor: pointer; }
     ul { padding: 0 0 0 20px; }
     h1 { font: bold italic 30px/30px Georgia; text-align: center; }
     h2 { font: bold italic 17px/17px Georgia; padding-top: 10px; }
     small { display: block; font-size: 11px; line-height: 15px; }
     canvas { position: absolute; top: 0; left: 0; }
-    #controls { color: white; position: absolute; top: 0; right: 0; bottom: 0; width: 280px; overflow: auto; background: #98c4c9; padding-left: 20px;}
-    #loading { color: white; background:#000000; font: 30px; position: absolute; left: 0; top: 50%; right: 300px; text-align: center; margin-top: -8px; }
-    #background { width: 300px; margin-left: auto; margin-right: auto; position: relative; left: -140px; }
+    #controls { color: white; position: absolute; top: 0; right: 0; bottom: 0; width: 280px; overflow: auto; background: #56acba; padding-left: 20px;}
+    #loading { color: black; background:#FFFFFF; font: 30px; position: absolute; left: 0; top: 50%; right: 300px; text-align: center; margin-top: -8px; }
+    #background { position: absolute; top: 0; left: 0; }
+    #mini { position: absolute; bottom: 0; color:#000; background-color: #FFF; border: 1px solid #FFFFFF;}
+    #mini div{float:left; padding-top:8px; padding-left:30px; padding-right:30px;}
+    #mini h1{font: 20px/20px Georgia;}
+    #rain { position:absolute; right:0; top:0; margin:20px; width:30px;
+background-image:url("img/drop.png");
+ background-size:100% auto;
+ background-repeat:repeat-y;}
+    .rounded {
+      clear: both;
+      position: relative;
+      margin: 5px 0 0 0;
+      padding: 2px 2px 2px 2px;
+      background-color: #fff;
+      border-bottom: solid 2px #bbb;
+      word-wrap: break-word;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      border-radius: 6px;
+
+      -webkit-box-shadow: 0 1px 5px rgba(0,0,0,.46);
+      -moz-box-shadow: 0 1px 5px rgba(0,0,0,.46);
+      box-shadow: 0 1px 5px rgba(0,0,0,.46);
+      border-bottom: 0;
+    }
   </style>
 </head><body>
   <div id="background">
     <h1 id="month"></h1>
-    <img width="300px" src="img/sonarmap.png"></img>
+    <div id="rain"></div>
+    <div class="rounded" id="mini"><img style="float:left;" height="60px" src="img/sonarmapwhite.png"></img><div><h1>House Dar Ta'anna</h1></div></div>
   </div>
   <div id="loading">Loading...</div>
   <div id="controls">
     <h1>Conserve Your Water!</h1>
       <div id="questions">
         How many people live in your household?
-        <select id="num_people" onchange="updateWaterLevels()">
-           <option value="1" SELECTED>1</option>
+        <select id="num_people">
+           <option value="1">1</option>
            <option value="2">2</option>
-           <option value="3">3</option>
+           <option value="3" SELECTED>3</option>
            <option value="4">4</option>
            <option value="5">5</option>
            <option value="6">6</option>
@@ -48,13 +73,13 @@
         </select><br/>
 
         Do you have a dishwasher?
-        <select id="have_dishwasher" onchange="updateWaterLevels()">
+        <select id="have_dishwasher">
            <option value="1" SELECTED>Yes</option>
            <option value="2">No</option>
         </select><br/>
 
         Do you have a washing machine?
-        <select id="have_washing_machine" onchange="updateWaterLevels()">
+        <select id="have_washing_machine">
            <option value="1" SELECTED>Yes</option>
            <option value="0">No</option>
         </select>
@@ -62,7 +87,7 @@
 
      </br><div id="usage_metrics">
          The dishwasher runs once every
-         <select id="days_between_dishwashes" onchange="updateWaterLevels()">
+         <select id="days_between_dishwashes">
              <option value="0.5"> >1x/day </option>
              <option value="1">1 day</option>
              <option value="2">2 days</option>
@@ -73,7 +98,7 @@
              <option value="7">7 days</option>
          </select><br/>
          A load of laundry is done every
-         <select id="days_between_washes" onchange="updateWaterLevels()">
+         <select id="days_between_washes">
              <option value="1">1 day</option>
              <option value="3">3 days</option>
              <option value="5">5 days</option>
@@ -86,7 +111,7 @@
              <option value="19">19 days</option>
          </select><br/>
          Length of average shower:
-         <select id="shower_length" onchange="updateWaterLevels()">
+         <select id="shower_length">
              <option value="3">3 minutes</option>
              <option value="4">4 minutes</option>
              <option value="5">5 minutes</option>
@@ -105,19 +130,30 @@
 
      <br/><div id="display_options">
         Visualize cistern after:
-        <select id="num_months" onchange="updateWaterLevels()">
+        <select id="num_months">
            <option value="0">0 months</option>
            <option value="1">1 month</option>
            <option value="2">2 months</option>
-           <option value="3" SELECTED>3 months</option>
+           <option value="3">3 months</option>
            <option value="6">6 months</option>
-           <option value="12">1 year</option>
+           <option value="12" SELECTED>1 year</option>
            <option value="18">1 year, 6 months</option>
            <option value="24">2 years</option>
            <option value="36">3 years</option>
+           <option value="60">5 years</option>
+           <option value="120">10 years</option>
         </select>
 
-        <button onclick="go()">GO!</button>
+        Speed:
+        <select id="speed">
+           <option value="0.005">Slow</option>
+           <option value="0.01" SELECTED>Normal</option>
+           <option value="0.1">Fast</option>
+           <option value="1">Very Fast</option>
+        </select>
+        <br>
+        <br>
+        <button style="width:260px;" onclick="go()">GO!</button>
      </div>
   </div>
 </body></html>

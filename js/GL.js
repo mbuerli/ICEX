@@ -81,9 +81,12 @@ function addMatrixStacks(gl) {
 function addDrawFunctions(gl) {
   gl.update = function() {}
   gl.draw = function() {}
+  gl.onresize = function(width, height) {
+    gl.canvas.width = width;
+    gl.canvas.height = height;
+  }
   gl.resize = function() {
-    gl.canvas.width = window.innerWidth - 300;
-    gl.canvas.height = window.innerHeight;
+    gl.onresize(window.innerWidth, window.innerHeight);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.matrixMode(gl.PROJECTION);
     gl.loadIdentity();
